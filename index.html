@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LAN Chat</title>
+
+<style>
+
+/* =========================
+   BODY
+========================= */
+
+body{
+    margin:0;
+    font-family:tahoma;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    height:100vh;
+    display:flex;
+}
+
+
+/* =========================
+   SERVER LOGIN
+========================= */
+
+.server-login{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+
+.server-box{
+    background:#111;
+    padding:40px;
+    border-radius:15px;
+    text-align:center;
+    color:white;
+    box-shadow:0 0 30px rgba(0,0,0,0.5);
+    width:320px;
+}
+
+.server-box h2{
+    margin-top:0;
+}
+
+.server-box p{
+    color:#aaa;
+    font-size:13px;
+}
+
+.server-box input{
+    width:280px;
+    max-width:90%;
+    box-sizing:border-box;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:8px;
+    background:#222;
+    color:white;
+    outline:none;
+    direction:ltr;
+    text-align:left;
+}
+
+.server-box button{
+    margin-top:15px;
+    padding:11px 30px;
+    border:none;
+    border-radius:8px;
+    background:#4CAF50;
+    color:white;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.server-box button:hover{
+    background:#45a049;
+}
+
+#serverStatus{
+    margin-top:15px;
+    font-size:13px;
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+.login{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+
+.login-box{
+    background:#111;
+    padding:40px;
+    border-radius:15px;
+    text-align:center;
+    color:white;
+    box-shadow:0 0 30px rgba(0,0,0,0.5);
+    width:300px;
+}
+
+.login-box input{
+    width:220px;
+    padding:10px;
+    margin-top:15px;
+    border:none;
+    border-radius:8px;
+    background:#222;
+    color:white;
+    outline:none;
+}
+
+.login-box button{
+    margin-top:15px;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background:#4CAF50;
+    color:white;
+    cursor:pointer;
+}
+
+.login-box button:hover{
+    background:#45a049;
+}
+
+
+/* =========================
+   APP
+========================= */
+
+.app{
+    display:none;
+    width:100%;
+    height:100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+    width:250px;
+    background:rgba(0,0,0,0.5);
+    color:white;
+    padding:20px;
+    overflow:auto;
+    box-sizing:border-box;
+}
+
+.sidebar h2{
+    margin-top:0;
+}
+
+.section{
+    margin-top:20px;
+}
+
+.user{
+    padding:10px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.05);
+    margin-top:5px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.user:hover{
+    background:rgba(255,255,255,0.12);
+}
+
+.badge{
+    background:red;
+    border-radius:50%;
+    padding:2px 7px;
+    font-size:12px;
+}
+
+
+/* =========================
+   CHAT
+========================= */
+
+.chat{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+.chat-header{
+    padding:15px;
+    background:rgba(0,0,0,0.5);
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.chat-title{
+    font-size:16px;
+}
+
+.server-button{
+    background:#333;
+    color:white;
+    border:none;
+    padding:7px 12px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.server-button:hover{
+    background:#444;
+}
+
+
+/* =========================
+   MESSAGES
+========================= */
+
+.messages{
+    flex:1;
+    padding:20px;
+    overflow-y:auto;
+}
+
+.message{
+    margin-bottom:15px;
+}
+
+.message.self{
+    text-align:right;
+}
+
+.bubble{
+    display:inline-block;
+    padding:10px 15px;
+    border-radius:15px;
+    background:#2b2b2b;
+    color:white;
+    max-width:60%;
+    word-wrap:break-word;
+}
+
+.self .bubble{
+    background:#0088cc;
+}
+
+.name{
+    font-size:12px;
+    color:#aaa;
+    margin-bottom:3px;
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+.input-area{
+    display:flex;
+    align-items:center;
+    padding:10px;
+    background:#0f0f0f;
+}
+
+.input-area input{
+    flex:1;
+    background:#1f1f1f;
+    border:none;
+    border-radius:25px;
+    padding:12px 15px;
+    color:white;
+    outline:none;
+}
+
+.send-btn{
+    margin-left:10px;
+    background:#0088cc;
+    border:none;
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.send-btn:hover{
+    background:#0077b5;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:700px){
+
+    .sidebar{
+        width:180px;
+        padding:10px;
+    }
+
+    .bubble{
+        max-width:80%;
+    }
+
+    .server-box{
+        width:280px;
+        padding:30px 20px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     SERVER CONNECTION PAGE
+================================================== -->
+
+<div class="server-login" id="serverLogin">
+
+    <div class="server-box">
+
+        <h2>LAN Chat</h2>
+
+        <p>
+           Enter the server IP address
+        </p>
+
+        <input
+            id="serverInput"
+            placeholder="Example: 192.168.137.162"
+            autocomplete="off"
+        >
+
+        <br>
+
+        <button onclick="connectServer()">
+            Connecting to the server...
+        </button>
+
+        <div id="serverStatus"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     USER LOGIN
+================================================== -->
+
+<div class="login" id="login" style="display:none;">
+
+    <div class="login-box">
+
+        <h2>Enter Chat</h2>
+
+        <input
+            id="username"
+            placeholder="Enter your name"
+            autocomplete="off"
+        >
+
+        <br>
+
+        <button onclick="enterChat()">
+            Enter
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     MAIN APP
+================================================== -->
+
+<div class="app" id="app">
+
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>LAN Chat</h2>
+
+        <div class="section">
+
+            <h3>Chats</h3>
+
+            <div id="users"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHAT -->
+
+    <div class="chat">
+
+
+        <!-- HEADER -->
+
+        <div class="chat-header">
+
+            <div
+                class="chat-title"
+                id="chatTitle"
+            >
+                Public chat
+            </div>
+
+            <button
+                class="server-button"
+                onclick="changeServer()"
+            >
+                ⚙ Change server
+            </button>
+
+        </div>
+
+
+        <!-- MESSAGES -->
+
+        <div
+            id="messages"
+            class="messages"
+        ></div>
+
+
+        <!-- INPUT -->
+
+        <div class="input-area">
+
+            <input
+                id="messageInput"
+                placeholder="Write your message...."
+                autocomplete="off"
+            >
+
+            <button
+                class="send-btn"
+                onclick="sendMessage()"
+            >
+                ➤
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* ==================================================
+   SERVER
+================================================== */
+
+let SERVER =
+    localStorage.getItem("server_url") || "";
+
+
+/* ==================================================
+   VARIABLES
+================================================== */
+
+let username = "";
+
+let selectedUser = "all";
+
+let messagesBox =
+    document.getElementById("messages");
+
+let input =
+    document.getElementById("messageInput");
+
+let usersBox =
+    document.getElementById("users");
+
+let title =
+    document.getElementById("chatTitle");
+
+let unread = {};
+
+let lastCount = 0;
+
+
+/* ==================================================
+   CLIENT ID
+================================================== */
+
+let client_id =
+    localStorage.getItem("client_id");
+
+
+if(!client_id){
+
+    client_id =
+        Math.random()
+        .toString(36)
+        .substring(2);
+
+    localStorage.setItem(
+        "client_id",
+        client_id
+    );
+
+}
+
+
+/* ==================================================
+   LOAD SAVED SERVER
+================================================== */
+
+if(SERVER !== ""){
+
+    document.getElementById(
+        "serverInput"
+    ).value =
+        SERVER
+        .replace("http://","")
+        .replace("https://","")
+        .replace(":8000","");
+
+}
+
+
+/* ==================================================
+   CONNECT TO SERVER
+================================================== */
+
+function connectServer(){
+
+    let address =
+        document
+        .getElementById("serverInput")
+        .value
+        .trim();
+
+
+    /* =========================
+       CHECK EMPTY
+    ========================= */
+
+    if(address === ""){
+
+        showServerStatus(
+            "Please enter the server IP",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /* =========================
+       REMOVE HTTP
+    ========================= */
+
+    address =
+        address
+        .replace(/^https?:\/\//,"");
+
+
+    /* =========================
+       REMOVE TRAILING SLASH
+    ========================= */
+
+    address =
+        address.replace(/\/+$/,"");
+
+
+    /* =========================
+       ADD PORT 8000
+    ========================= */
+
+
+    if(!address.match(/:\d+$/)){
+
+        address += ":8000";
+
+    }
+
+
+    /* =========================
+       CREATE SERVER URL
+    ========================= */
+
+    address =
+        "http://" + address;
+
+
+    /* =========================
+       SHOW STATUS
+    ========================= */
+
+    showServerStatus(
+        "Connecting to the server...",
+        "loading"
+    );
+
+
+    /* =========================
+       TEST CONNECTION
+    ========================= */
+
+    fetch(
+        address + "/users"
+    )
+
+
+    .then(response => {
+
+        if(!response.ok){
+
+            throw new Error(
+                "Server Error"
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+
+    .then(data => {
+
+
+        /* =========================
+           SAVE SERVER
+        ========================= */
+
+        SERVER = address;
+
+        localStorage.setItem(
+            "server_url",
+            SERVER
+        );
+
+
+        /* =========================
+           HIDE SERVER PAGE
+        ========================= */
+
+        document.getElementById(
+            "serverLogin"
+        ).style.display =
+            "none";
+
+
+        /* =========================
+           SHOW USER LOGIN
+        ========================= */
+
+        document.getElementById(
+            "login"
+        ).style.display =
+            "flex";
+
+
+        document.getElementById(
+            "username"
+        ).focus();
+
+    })
+
+
+    .catch(error => {
+
+        console.error(error);
+
+        showServerStatus(
+            "❌ Connection to the server could not be established",
+            "error"
+        );
+
+    });
+
+}
+
+
+/* ==================================================
+   SERVER STATUS
+================================================== */
+
+function showServerStatus(
+    text,
+    type
+){
+
+    let status =
+        document.getElementById(
+            "serverStatus"
+        );
+
+
+    status.innerText =
+        text;
+
+
+    if(type === "error"){
+
+        status.style.color =
+            "#ff5555";
+
+    }
+
+    else if(type === "loading"){
+
+        status.style.color =
+            "#ffaa00";
+
+    }
+
+    else{
+
+        status.style.color =
+            "#4CAF50";
+
+    }
+
+}
+
+
+/* ==================================================
+   CHANGE SERVER
+================================================== */
+
+function changeServer(){
+
+    username = "";
+
+    selectedUser = "all";
+
+    lastCount = 0;
+
+    unread = {};
+
+
+    document.getElementById(
+        "app"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "login"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "serverLogin"
+    ).style.display =
+        "flex";
+
+
+    document.getElementById(
+        "serverInput"
+    ).value =
+        SERVER
+        .replace("http://","")
+        .replace("https://","")
+        .replace(":8000","");
+
+
+    document.getElementById(
+        "serverStatus"
+    ).innerText = "";
+
+
+    document.getElementById(
+        "serverInput"
+    ).focus();
+
+}
+
+
+/* ==================================================
+   ENTER CHAT
+================================================== */
+
+function enterChat(){
+
+    let name =
+        document
+        .getElementById("username")
+        .value
+        .trim();
+
+
+    if(name === ""){
+
+        return;
+
+    }
+
+
+    username = name;
+
+    lastCount = 0;
+
+
+    document.getElementById(
+        "login"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "app"
+    ).style.display =
+        "flex";
+
+
+    fetch(
+        SERVER + "/join",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:JSON.stringify({
+
+                name:username,
+
+                client_id:client_id
+
+            })
+
+        }
+    )
+
+    .catch(error => {
+
+        console.error(
+            "Join error:",
+            error
+        );
+
+    });
+
+
+    loadMessages();
+
+    loadUsers();
+
+}
+
+
+/* ==================================================
+   ENTER KEY
+================================================== */
+
+input.addEventListener(
+    "keypress",
+    function(e){
+
+        if(e.key === "Enter"){
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   SEND MESSAGE
+================================================== */
+
+function sendMessage(){
+
+    if(username === ""){
+
+        return;
+
+    }
+
+
+    let text =
+        input.value.trim();
+
+
+    if(text === ""){
+
+        return;
+
+    }
+
+
+    fetch(
+        SERVER + "/send",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:JSON.stringify({
+
+                name:username,
+
+                message:text,
+
+                to:selectedUser
+
+            })
+
+        }
+    )
+
+
+    .then(response => {
+
+        if(!response.ok){
+
+            throw new Error(
+                "Send failed"
+            );
+
+        }
+
+    })
+
+
+    .catch(error => {
+
+        console.error(
+            "Send error:",
+            error
+        );
+
+    });
+
+
+    input.value = "";
+
+}
+
+
+/* ==================================================
+   ADD MESSAGE
+================================================== */
+
+function addMessage(
+    name,
+    text,
+    self=false
+){
+
+    let msg =
+        document.createElement(
+            "div"
+        );
+
+
+    msg.className =
+        "message";
+
+
+    if(self){
+
+        msg.classList.add(
+            "self"
+        );
+
+    }
+
+
+    let nameDiv =
+        document.createElement(
+            "div"
+        );
+
+    nameDiv.className =
+        "name";
+
+    nameDiv.innerText =
+        name;
+
+
+    let bubble =
+        document.createElement(
+            "div"
+        );
+
+    bubble.className =
+        "bubble";
+
+    bubble.innerText =
+        text;
+
+
+    msg.appendChild(
+        nameDiv
+    );
+
+    msg.appendChild(
+        bubble
+    );
+
+
+    messagesBox.appendChild(
+        msg
+    );
+
+
+    messagesBox.scrollTop =
+        messagesBox.scrollHeight;
+
+}
+
+
+/* ==================================================
+   LOAD MESSAGES
+================================================== */
+
+function loadMessages(){
+
+    if(username === ""){
+
+        return;
+
+    }
+
+
+    fetch(
+        SERVER + "/messages"
+    )
+
+
+    .then(r => {
+
+        if(!r.ok){
+
+            throw new Error(
+                "Messages error"
+            );
+
+        }
+
+        return r.json();
+
+    })
+
+
+    .then(data => {
+
+
+        if(data.length < lastCount){
+
+            lastCount = 0;
+
+        }
+
+
+        if(data.length > lastCount){
+
+            let newMsgs =
+                data.slice(
+                    lastCount
+                );
+
+
+            newMsgs.forEach(
+                m => {
+
+                    if(
+                        m.name !== username &&
+                        m.to === username
+                    ){
+
+                        if(
+                            selectedUser !== m.name
+                        ){
+
+                            if(
+                                !unread[m.name]
+                            ){
+
+                                unread[m.name] = 0;
+
+                            }
+
+                            unread[m.name]++;
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+            lastCount =
+                data.length;
+
+        }
+
+
+        messagesBox.innerHTML =
+            "";
+
+
+        data.forEach(
+            m => {
+
+
+                /* =========================
+                   PUBLIC CHAT
+                ========================= */
+
+                if(
+                    selectedUser === "all"
+                ){
+
+                    if(
+                        m.to === "all"
+                    ){
+
+                        addMessage(
+                            m.name,
+                            m.message,
+                            m.name === username
+                        );
+
+                    }
+
+                }
+
+
+                /* =========================
+                   PRIVATE CHAT
+                ========================= */
+
+                else{
+
+                    if(
+
+                        (
+                            m.name === username &&
+                            m.to === selectedUser
+                        )
+
+                        ||
+
+                        (
+                            m.name === selectedUser &&
+                            m.to === username
+                        )
+
+                    ){
+
+                        addMessage(
+                            m.name,
+                            m.message,
+                            m.name === username
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+    })
+
+
+    .catch(error => {
+
+        console.error(
+            "Load messages error:",
+            error
+        );
+
+    });
+
+}
+
+
+/* ==================================================
+   LOAD USERS
+================================================== */
+
+function loadUsers(){
+
+    if(username === ""){
+
+        return;
+
+    }
+
+
+    fetch(
+        SERVER + "/users"
+    )
+
+
+    .then(r => {
+
+        if(!r.ok){
+
+            throw new Error(
+                "Users error"
+            );
+
+        }
+
+        return r.json();
+
+    })
+
+
+    .then(data => {
+
+
+        usersBox.innerHTML =
+            "";
+
+
+        /* =========================
+           PUBLIC CHAT
+        ========================= */
+
+        let pub =
+            document.createElement(
+                "div"
+            );
+
+        pub.className =
+            "user";
+
+        pub.innerText =
+            "Public Chat";
+
+
+        pub.onclick = () => {
+
+            selectedUser =
+                "all";
+
+            title.innerText =
+                "Public chat";
+
+            messagesBox.innerHTML =
+                "";
+
+            loadMessages();
+
+        };
+
+
+        usersBox.appendChild(
+            pub
+        );
+
+
+        /* =========================
+           USERS
+        ========================= */
+
+        data.forEach(
+            u => {
+
+
+                if(u === username){
+
+                    return;
+
+                }
+
+
+                let div =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className =
+                    "user";
+
+
+                let name =
+                    document.createElement(
+                        "span"
+                    );
+
+                name.innerText =
+                    u;
+
+
+                div.appendChild(
+                    name
+                );
+
+
+                /* =========================
+                   UNREAD BADGE
+                ========================= */
+
+                if(unread[u]){
+
+                    let badge =
+                        document.createElement(
+                            "span"
+                        );
+
+                    badge.className =
+                        "badge";
+
+                    badge.innerText =
+                        unread[u];
+
+
+                    div.appendChild(
+                        badge
+                    );
+
+                }
+
+
+                /* =========================
+                   CLICK USER
+                ========================= */
+
+                div.onclick = () => {
+
+                    selectedUser =
+                        u;
+
+                    title.innerText =
+                        "chat with " + u;
+
+                    unread[u] =
+                        0;
+
+                    messagesBox.innerHTML =
+                        "";
+
+                    loadMessages();
+
+                };
+
+
+                usersBox.appendChild(
+                    div
+                );
+
+            }
+        );
+
+    })
+
+
+    .catch(error => {
+
+        console.error(
+            "Load users error:",
+            error
+        );
+
+    });
+
+}
+
+
+/* ==================================================
+   HEARTBEAT
+================================================== */
+
+function heartbeat(){
+
+    if(username === ""){
+
+        return;
+
+    }
+
+
+    fetch(
+        SERVER + "/heartbeat",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:JSON.stringify({
+
+                client_id:
+                    client_id
+
+            })
+
+        }
+    )
+
+
+    .catch(error => {
+
+        console.error(
+            "Heartbeat error:",
+            error
+        );
+
+    });
+
+}
+
+
+/* ==================================================
+   AUTO UPDATE
+================================================== */
+
+setInterval(
+    loadMessages,
+    1000
+);
+
+
+setInterval(
+    loadUsers,
+    2000
+);
+
+
+setInterval(
+    heartbeat,
+    3000
+);
+
+</script>
+
+</body>
+</html>
